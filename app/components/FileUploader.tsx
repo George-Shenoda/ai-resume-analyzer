@@ -9,6 +9,7 @@ interface FileUploaderProps {
 export default function FileUploader({ onFileSelect } : FileUploaderProps) {
     const onDrop = useCallback((acceptedFiles: File[]) => {
         setFile(acceptedFiles[0] || null);
+        const file = acceptedFiles[0];
         onFileSelect?.(file);
     }, [onFileSelect])
     const maxFileSize = 20 * 1024 * 1024;
@@ -19,8 +20,6 @@ export default function FileUploader({ onFileSelect } : FileUploaderProps) {
         maxSize: maxFileSize,
     })
     const [file, setFile] = useState<File | null>(acceptedFiles[0] || null);
-
-
 
     return <div className={`w-full gradient-border`}>
         <div {...getRootProps()}>

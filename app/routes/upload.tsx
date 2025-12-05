@@ -1,8 +1,17 @@
 import Navbar from "~/components/navbar";
 import {type FormEvent, useState} from "react";
 import FileUploader from "~/components/FileUploader";
+import DOMPurify  from 'dompurify'
+import {usePuterStore} from "~/lib/puter";
+import {useNavigate} from "react-router";
+import {convertPdfToImage} from "~/lib/pdf2image";
+import {generateUUID} from "~/lib/utils";
+import {prepareInstructions} from "../../constants";
+import {zodResume} from "../../types/zodIndex.d";
 
 export  default function Upload(){
+    const { auth, fs, isLoading, ai, kv } = usePuterStore()
+    const  navigate = useNavigate()
     const [isProcessing, setIsProcessing] = useState(false);
     const [statusText, setStatusText] = useState('');
     const [file, setFile] = useState<File | null>(null);
@@ -11,16 +20,68 @@ export  default function Upload(){
         setFile(file);
     }
 
+    const handleAnalyze = async ({ companyName, jobTitle, jobDescription, file } : {companyName: string, jobTitle: string, jobDescription: string, file: File}) => {
+        setIsProcessing(true);
+        setStatusText("Uploading the File...");
+        const uploadedFile = await fs.upload([file])
+        if (!uploadedFile) return setStatusText("Error: failed to upload file");
+        setStatusText("converting to image...");
+
+        const image = await convertPdfToImage(file);
+        if (!image.file) return setStatusText("Error: failed to convert image");
+
+        setStatusText("Uploading image...");
+        const uploadedImage = await fs.upload([image.file])
+
+        if (!uploadedImage) return setStatusText("Error: failed to upload image");
+        setStatusText("preparing data...");
+
+        const uuid = generateUUID();
+        const data = {
+            id: uuid,
+            resumePath: uploadedFile.path,
+            imagePath: uploadedImage.path,
+            companyName: companyName,
+            jobTitle: jobTitle,
+            jobDescription: jobDescription,
+            feedback: ''
+        }
+
+        await kv.set(`resume:${uuid}`, JSON.stringify(data));
+
+        setStatusText("Analyzing data...");
+        const feedback = await ai.feedback(uploadedFile.path, prepareInstructions({
+            jobTitle, jobDescription
+        }))
+
+
+        if (!feedback) return setStatusText("Error: failed to analyze file");
+
+        const feedbackText = typeof feedback.message.content === "string" ? feedback.message.content : feedback.message.content[0].text;
+
+        data.feedback = JSON.parse(feedbackText);
+
+        const result = zodResume.safeParse(data);
+        console.log("result: ", result.success, data);
+        if (!result.data) return setStatusText(`${result.error}`);
+
+        await kv.set(`resume:${uuid}`, JSON.stringify(result.data));
+        setStatusText("Analysis complete., redirecting...");
+        console.log(result.data)
+    }
+
     const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const form = e.currentTarget.closest('form');
         if(!form) return;
         const formData = new FormData(form);
+        const companyName = DOMPurify.sanitize(formData.get('company-name') as string);
+        const jobTitle = DOMPurify.sanitize(formData.get('job-title') as string);
+        const jobDescription = DOMPurify.sanitize(formData.get('job-description') as string);
 
-        const companyName = formData.get('company-name');
-        const jobTitle = formData.get('job-title');
-        const jobDescription = formData.get('job-description');
+        if(!file) return;
 
+        handleAnalyze({ companyName, jobTitle, jobDescription, file })
 
     }
 
