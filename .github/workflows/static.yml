@@ -37,7 +37,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: "lt"
+          node-version: "24"
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
       - name: Build
