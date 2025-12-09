@@ -34,7 +34,7 @@ export default function Home() {
 
     useEffect(() => {
         if (!auth.isAuthenticated) {
-            navigate("/ai-resume-analyzer/auth?next=/ai-resume-analyzer/");
+            navigate("/auth?next=/");
         }
     }, [auth.isAuthenticated]);
 

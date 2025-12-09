@@ -23,7 +23,7 @@ export  default function Upload(){
 
     useEffect(() => {
             if (!auth.isAuthenticated) {
-                navigate("/ai-resume-analyzer/auth?next=/ai-resume-analyzer/upload/");
+                navigate("/auth?next=/upload/");
             }
         }, [auth.isAuthenticated]);
 
@@ -73,7 +73,7 @@ export  default function Upload(){
 
         await kv.set(`resume:${uuid}`, JSON.stringify(result.data));
         setStatusText("Analysis complete., redirecting...");
-        navigate(`/ai-resume-analyzer/resume/${uuid}`)
+        navigate(`/resume/${uuid}`)
     }
 
     const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
@@ -99,7 +99,7 @@ export  default function Upload(){
                 {isProcessing ? (
                     <>
                         <h2>{statusText}</h2>
-                        <img src={`/images/resume-scan.gif`} alt="" className={`w-full`}/>
+                        <img src={`images/resume-scan.gif`} alt="" className={`w-full`}/>
                     </>
                 ): (
                     <>
