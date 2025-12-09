@@ -9,7 +9,6 @@
     "start": "react-router-serve ./build/server/index.js",
     "preview": "vite preview",
     "typecheck": "react-router typegen && tsc",
-    "prepare": "husky install",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build/client"
   },
