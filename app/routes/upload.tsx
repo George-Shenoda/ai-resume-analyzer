@@ -8,9 +8,10 @@ import {convertPdfToImage} from "~/lib/pdf2image";
 import {generateUUID} from "~/lib/utils";
 import {prepareInstructions} from "../../constants";
 import {zodResume} from "../../types/zodIndex.d";
+import React from "react";
 
 export  default function Upload(){
-    const { auth, fs, isLoading, ai, kv } = usePuterStore()
+    const { fs, ai, kv } = usePuterStore()
     const  navigate = useNavigate()
     const [isProcessing, setIsProcessing] = useState(false);
     const [statusText, setStatusText] = useState('');
@@ -62,12 +63,12 @@ export  default function Upload(){
         data.feedback = JSON.parse(feedbackText);
 
         const result = zodResume.safeParse(data);
-        console.log("result: ", result.success, data);
         if (!result.data) return setStatusText(`${result.error}`);
 
         await kv.set(`resume:${uuid}`, JSON.stringify(result.data));
         setStatusText("Analysis complete., redirecting...");
         console.log(result.data)
+        navigate(`/resume/${uuid}`)
     }
 
     const handleSubmit = (e: FormEvent<HTMLFormElement>) => {

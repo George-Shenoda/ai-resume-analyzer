@@ -1,5 +1,6 @@
 import {Link} from "react-router";
 import ScoreCircle from "~/components/ScoreCircle";
+import React from "react";
 
 export default function ResumeCard({resume : {id, companyName, jobTitle, feedback, imagePath}}: {resume: Resume}) {
     return (

@@ -1,5 +1,6 @@
 import {useCallback, useState} from "react";
 import {useDropzone} from "react-dropzone";
+import React from "react";
 import {formatSize} from "~/lib/utils";
 
 interface FileUploaderProps {
@@ -13,12 +14,12 @@ export default function FileUploader({ onFileSelect } : FileUploaderProps) {
         onFileSelect?.(file);
     }, [onFileSelect])
     const maxFileSize = 20 * 1024 * 1024;
-    const { getInputProps, getRootProps, isDragActive, acceptedFiles } = useDropzone({
+    const { getInputProps, getRootProps, acceptedFiles } = useDropzone({
         onDrop,
         multiple: false,
-        accept: { 'application/pdf': ['.pdf'] },
+        accept: { "application/pdf": [".pdf"] },
         maxSize: maxFileSize,
-    })
+    });
     const [file, setFile] = useState<File | null>(acceptedFiles[0] || null);
 
     return <div className={`w-full gradient-border`}>
@@ -37,7 +38,7 @@ export default function FileUploader({ onFileSelect } : FileUploaderProps) {
                                     </p>
                                 </div>
                             </div>
-                            <button className={`p-2 cursor-pointer`} onClick={(e) => {
+                            <button className={`p-2 cursor-pointer`} onClick={() => {
                                 setFile(null)
                                 onFileSelect?.(file)
                             }}>
