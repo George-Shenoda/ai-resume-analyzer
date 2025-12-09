@@ -11,7 +11,7 @@
     "typecheck": "react-router typegen && tsc",
     "prepare": "husky install",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d dist/client"
+    "deploy": "gh-pages -d build/client"
   },
   "dependencies": {
     "@react-router/node": "^7.9.2",
