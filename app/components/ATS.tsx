@@ -16,24 +16,24 @@ const ATS: React.FC<ATSProps> = ({ score, suggestions }) => {
         score > 69
             ? "from-green-100"
             : score > 49
-                ? "from-yellow-100"
-                : "from-red-100";
+              ? "from-yellow-100"
+              : "from-red-100";
 
     // Determine icon based on score
     const iconSrc =
         score > 69
             ? "/icons/ats-good.svg"
             : score > 49
-                ? "/icons/ats-warning.svg"
-                : "/icons/ats-bad.svg";
+              ? "/icons/ats-warning.svg"
+              : "/icons/ats-bad.svg";
 
     // Determine subtitle based on score
     const subtitle =
         score > 69
             ? "Great Job!"
             : score > 49
-                ? "Good Start"
-                : "Needs Improvement";
+              ? "Good Start"
+              : "Needs Improvement";
 
     return (
         <div
@@ -44,7 +44,7 @@ const ATS: React.FC<ATSProps> = ({ score, suggestions }) => {
                 <img src={iconSrc} alt="ATS Score Icon" className="w-12 h-12" />
                 <div>
                     <h2 className="text-2xl font-bold">
-                        ATS Score - {score}/100
+                        ATS Score : {score}/100
                     </h2>
                 </div>
             </div>
