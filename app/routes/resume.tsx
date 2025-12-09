@@ -22,7 +22,7 @@ const Resume = () => {
 
     useEffect(() => {
         if (!isLoading && !auth.isAuthenticated){
-            navigate(`/auth?next=/resume/${id}`);
+            navigate(`/ai-resume-analyzer/auth?next=/ai-resume-analyzer/resume/${id}`);
         }
     }, [isLoading]);
 

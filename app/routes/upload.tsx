@@ -1,5 +1,5 @@
 import Navbar from "~/components/navbar";
-import {type FormEvent, useState} from "react";
+import {type FormEvent, useEffect, useState} from "react";
 import FileUploader from "~/components/FileUploader";
 import DOMPurify  from 'dompurify'
 import {usePuterStore} from "~/lib/puter";
@@ -11,7 +11,7 @@ import {zodResume} from "../../types/zodIndex.d";
 import React from "react";
 
 export  default function Upload(){
-    const { fs, ai, kv } = usePuterStore()
+    const { auth,fs, ai, kv } = usePuterStore()
     const  navigate = useNavigate()
     const [isProcessing, setIsProcessing] = useState(false);
     const [statusText, setStatusText] = useState('');
@@ -20,6 +20,12 @@ export  default function Upload(){
     const handleFileSelect = (file: File | null) => {
         setFile(file);
     }
+
+    useEffect(() => {
+            if (!auth.isAuthenticated) {
+                navigate("/ai-resume-analyzer/auth?next=/ai-resume-analyzer/upload/");
+            }
+        }, [auth.isAuthenticated]);
 
     const handleAnalyze = async ({ companyName, jobTitle, jobDescription, file } : {companyName: string, jobTitle: string, jobDescription: string, file: File}) => {
         setIsProcessing(true);
@@ -67,7 +73,7 @@ export  default function Upload(){
 
         await kv.set(`resume:${uuid}`, JSON.stringify(result.data));
         setStatusText("Analysis complete., redirecting...");
-        navigate(`/resume/${uuid}`)
+        navigate(`/ai-resume-analyzer/resume/${uuid}`)
     }
 
     const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
