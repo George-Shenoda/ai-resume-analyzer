@@ -41,7 +41,7 @@ jobs:
 
       - name: Build (Vite) — set base to "/"
         # This command passes the base override to Vite's CLI.
-        run: pnpm run build -- --base "/"
+        run: pnpm run build
         env:
           NODE_ENV: production
 
