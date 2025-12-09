@@ -6,7 +6,7 @@ import {usePuterStore} from "~/lib/puter";
 import {useNavigate} from "react-router";
 import {convertPdfToImage} from "~/lib/pdf2image";
 import {generateUUID} from "~/lib/utils";
-import {prepareInstructions} from "../../constants";
+import {prepareInstructions} from "../../constants/index";
 import {zodResume} from "../../types/zodIndex.d";
 import React from "react";
 
